@@ -11,54 +11,39 @@ from PyQt5.QtGui import QImage, QPixmap
 
 
 def create_synthetic_image(
-    height: int = 500,
-    width: int = 500,
-    color: Tuple[int, int, int] = (240, 240, 245)
+    height: int = 300,
+    width: int = 300,
+    color: Tuple[int, int, int] = (0, 0, 0)
 ) -> np.ndarray:
-    """Generates a synthetic RGB image matrix with a subtle gradient pattern.
+    """Generates a black synthetic BGR image matrix.
 
     Args:
-        height (int): Height of the output image in pixels. Defaults to 500.
-        width (int): Width of the output image in pixels. Defaults to 500.
-        color (Tuple[int, int, int]): Base BGR color tuple. Defaults to light gray/blue.
+        height (int): Height of output image in pixels. Defaults to 300.
+        width (int): Width of output image in pixels. Defaults to 300.
+        color (Tuple[int, int, int]): Base BGR color tuple. Defaults to black (0, 0, 0).
 
     Returns:
         np.ndarray: A 3-channel BGR image array of shape (height, width, 3).
     """
-    # Create base background matrix
-    image = np.full((height, width, 3), color, dtype=np.uint8)
-
-    # Draw vertical and horizontal grid lines to simulate fabric texture
-    grid_spacing = 50
-    grid_color = (210, 210, 220)
-    for x in range(0, width, grid_spacing):
-        cv2.line(image, (x, 0), (x, height), grid_color, 1)
-    for y in range(0, height, grid_spacing):
-        cv2.line(image, (0, y), (width, y), grid_color, 1)
-
-    # Draw decorative fashion design elements (geometric shapes)
-    cv2.circle(image, (width // 2, height // 2), 120, (180, 140, 255), 3)
-    cv2.rectangle(image, (100, 100), (width - 100, height - 100), (255, 180, 140), 2)
-
-    return image
+    return np.full((height, width, 3), color, dtype=np.uint8)
 
 
 def draw_text_overlay(
     image: np.ndarray,
-    text: str = "Stylinger Pipeline OK",
-    position: Tuple[int, int] = (30, 260),
-    font_scale: float = 0.9,
-    color: Tuple[int, int, int] = (40, 40, 200),
+    text: str = "CG & IP Pipeline OK",
+    position: Tuple[int, int] = (15, 160),
+    font_scale: float = 0.7,
+    color: Tuple[int, int, int] = (0, 255, 0),
     thickness: int = 2
 ) -> np.ndarray:
     """Draws a text string overlay onto an OpenCV image array.
 
     Args:
         image (np.ndarray): Source BGR image array.
-        text (str): String message to overlay. Defaults to "Stylinger Pipeline OK".
+        text (str): String message to overlay. Defaults to "CG & IP Pipeline OK".
         position (Tuple[int, int]): (x, y) coordinates for text origin.
         font_scale (float): Scale factor for font size.
-        color (Tuple[int, int, int]): BGR color tuple for the text.
+        color (Tuple[int, int, int]): BGR color tuple for the text (Green by default).
         thickness (int): Line thickness for text drawing.
 
     Returns:
@@ -67,20 +52,6 @@ def draw_text_overlay(
     output_image = image.copy()
     font = cv2.FONT_HERSHEY_SIMPLEX
 
-    # Add shadow effect for enhanced legibility
-    shadow_color = (255, 255, 255)
-    cv2.putText(
-        output_image,
-        text,
-        (position[0] + 1, position[1] + 1),
-        font,
-        font_scale,
-        shadow_color,
-        thickness + 2,
-        cv2.LINE_AA
-    )
-
-    # Main text overlay
     cv2.putText(
         output_image,
         text,

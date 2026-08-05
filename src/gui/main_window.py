@@ -49,53 +49,55 @@ class MainWindow(QMainWindow):
     def _init_ui(self) -> None:
         """Constructs and positions UI widgets, layouts, and window properties."""
         self.setWindowTitle("Stylinger — AI Fashion Assistant (CG/IP Hello World Pipeline)")
-        self.setGeometry(100, 100, 1100, 700)
+        self.setGeometry(100, 100, 720, 440)
 
         # Central Widget & Main Vertical Layout
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(20, 20, 20, 20)
-        main_layout.setSpacing(15)
+        main_layout.setContentsMargins(12, 10, 12, 10)
+        main_layout.setSpacing(8)
 
         # Header Title Banner
         header_label = QLabel("Stylinger: Computer Graphics & Image Processing Studio")
-        header_font = QFont("Arial", 16, QFont.Bold)
+        header_font = QFont("Arial", 14, QFont.Bold)
         header_label.setFont(header_font)
         header_label.setAlignment(Qt.AlignCenter)
-        header_label.setStyleSheet("color: #2C3E50; margin-bottom: 10px;")
+        header_label.setStyleSheet("color: #2C3E50; margin-bottom: 2px;")
         main_layout.addWidget(header_label)
 
         # Dual Image View Panel Layout (Horizontal Split)
         view_layout = QHBoxLayout()
-        view_layout.setSpacing(20)
+        view_layout.setSpacing(12)
 
         # Left GroupBox: Original Image Panel
         left_box = QGroupBox("Original Input Matrix (Synthetic Image + Overlay)")
-        left_box.setFont(QFont("Arial", 10, QFont.Bold))
+        left_box.setFont(QFont("Arial", 9, QFont.Bold))
         left_layout = QVBoxLayout(left_box)
+        left_layout.setContentsMargins(8, 8, 8, 8)
 
         self.label_original = QLabel()
         self.label_original.setAlignment(Qt.AlignCenter)
-        self.label_original.setMinimumSize(480, 480)
-        self.label_original.setText("Click 'Generate Sample Image' to start")
+        self.label_original.setFixedSize(300, 300)
+        self.label_original.setScaledContents(True)
         self.label_original.setStyleSheet(
-            "background-color: #ECF0F1; border: 2px dashed #BDC3C7; border-radius: 8px;"
+            "background-color: #000000; border: 1px solid #BDC3C7; border-radius: 4px;"
         )
         left_layout.addWidget(self.label_original)
         view_layout.addWidget(left_box)
 
         # Right GroupBox: Processed Image Panel
         right_box = QGroupBox("Processed Matrix (Canny Edge Detection Filter)")
-        right_box.setFont(QFont("Arial", 10, QFont.Bold))
+        right_box.setFont(QFont("Arial", 9, QFont.Bold))
         right_layout = QVBoxLayout(right_box)
+        right_layout.setContentsMargins(8, 8, 8, 8)
 
         self.label_processed = QLabel()
         self.label_processed.setAlignment(Qt.AlignCenter)
-        self.label_processed.setMinimumSize(480, 480)
-        self.label_processed.setText("Click 'Run Pipeline' to process image")
+        self.label_processed.setFixedSize(300, 300)
+        self.label_processed.setScaledContents(True)
         self.label_processed.setStyleSheet(
-            "background-color: #ECF0F1; border: 2px dashed #BDC3C7; border-radius: 8px;"
+            "background-color: #000000; border: 1px solid #BDC3C7; border-radius: 4px;"
         )
         right_layout.addWidget(self.label_processed)
         view_layout.addWidget(right_box)
@@ -104,30 +106,30 @@ class MainWindow(QMainWindow):
 
         # Controls Button Layout (Horizontal Row)
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(15)
+        button_layout.setSpacing(10)
 
         self.btn_generate = QPushButton("🎨 Generate Sample Image")
-        self.btn_generate.setFont(QFont("Arial", 10, QFont.Bold))
+        self.btn_generate.setFont(QFont("Arial", 9, QFont.Bold))
         self.btn_generate.setStyleSheet(
-            "QPushButton { background-color: #2980B9; color: white; padding: 10px 20px; border-radius: 6px; }"
+            "QPushButton { background-color: #2980B9; color: white; padding: 6px 14px; border-radius: 4px; }"
             "QPushButton:hover { background-color: #3498DB; }"
         )
         self.btn_generate.clicked.connect(self.on_generate_image)
         button_layout.addWidget(self.btn_generate)
 
         self.btn_pipeline = QPushButton("⚡ Run Pipeline")
-        self.btn_pipeline.setFont(QFont("Arial", 10, QFont.Bold))
+        self.btn_pipeline.setFont(QFont("Arial", 9, QFont.Bold))
         self.btn_pipeline.setStyleSheet(
-            "QPushButton { background-color: #27AE60; color: white; padding: 10px 20px; border-radius: 6px; }"
+            "QPushButton { background-color: #27AE60; color: white; padding: 6px 14px; border-radius: 4px; }"
             "QPushButton:hover { background-color: #2ECC71; }"
         )
         self.btn_pipeline.clicked.connect(self.on_run_pipeline)
         button_layout.addWidget(self.btn_pipeline)
 
         self.btn_exit = QPushButton("❌ Exit")
-        self.btn_exit.setFont(QFont("Arial", 10, QFont.Bold))
+        self.btn_exit.setFont(QFont("Arial", 9, QFont.Bold))
         self.btn_exit.setStyleSheet(
-            "QPushButton { background-color: #C0392B; color: white; padding: 10px 20px; border-radius: 6px; }"
+            "QPushButton { background-color: #C0392B; color: white; padding: 6px 14px; border-radius: 4px; }"
             "QPushButton:hover { background-color: #E74C3C; }"
         )
         self.btn_exit.clicked.connect(self.on_exit)
@@ -138,31 +140,31 @@ class MainWindow(QMainWindow):
         # Bottom Status Bar Feedback
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
-        self.status_bar.showMessage("Ready. System initialized successfully.")
 
-        # Auto-generate baseline synthetic image on program launch
+        # Automatically generate sample image and run pipeline on launch
         self.on_generate_image()
+        self.on_run_pipeline()
 
     def on_generate_image(self) -> None:
-        """Generates a synthetic RGB image with text overlay and renders it in GUI."""
+        """Generates a synthetic black 300x300 image with green text overlay and renders it in GUI."""
         try:
-            # 1. Create 500x500 base image matrix
-            raw_image = create_synthetic_image(height=500, width=500)
+            # 1. Create black 300x300 base image matrix
+            raw_image = create_synthetic_image(height=300, width=300)
 
-            # 2. Draw text overlay required by Hello World pipeline specs
+            # 2. Draw green text overlay required by baseline pipeline specs
             self.original_image = draw_text_overlay(
                 image=raw_image,
-                text="Stylinger Pipeline OK",
-                position=(30, 260),
-                font_scale=0.9,
-                color=(40, 40, 200),
+                text="CG & IP Pipeline OK",
+                position=(15, 160),
+                font_scale=0.7,
+                color=(0, 255, 0),
                 thickness=2
             )
 
             # 3. Convert NumPy array to PyQt QPixmap and render
             pixmap = cv2_to_qpixmap(self.original_image)
             self.label_original.setPixmap(pixmap)
-            self.status_bar.showMessage("Generated synthetic image matrix with text 'Stylinger Pipeline OK'.")
+            self.status_bar.showMessage("Generated black 300x300 matrix with text 'CG & IP Pipeline OK'.")
 
         except Exception as err:
             QMessageBox.critical(self, "Image Generation Error", f"Failed to generate sample image:\n{err}")
