@@ -26,8 +26,8 @@ class TestStylingerPipeline(unittest.TestCase):
 
     def setUp(self) -> None:
         """Sets up test fixtures before executing each test method."""
-        self.height = 500
-        self.width = 500
+        self.height = 300
+        self.width = 300
         self.synthetic_img = create_synthetic_image(height=self.height, width=self.width)
 
     def test_synthetic_image_generation(self) -> None:
@@ -39,7 +39,7 @@ class TestStylingerPipeline(unittest.TestCase):
 
     def test_text_overlay_rendering(self) -> None:
         """Verifies text overlay returns identical dimensions with modified pixels."""
-        text = "Stylinger Pipeline OK"
+        text = "CG & IP Pipeline OK"
         image_with_text = draw_text_overlay(self.synthetic_img, text=text)
 
         self.assertEqual(image_with_text.shape, self.synthetic_img.shape)
