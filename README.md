@@ -35,37 +35,34 @@ Digital Image Processing forms the foundation of computer vision applications in
 ---
 
 ## 📂 Folder Structure
-
 ```text
-Stylinger/
+CGIP-STYLINGER/
 ├── docs/
-│   └── architecture.md         # In-depth architectural & Git workflow documentation
+│   └── architecture.md         # System architecture, setup guide & Git workflow
 ├── src/
 │   ├── __init__.py
+│   ├── main.py                 # Application entry point
 │   ├── gui/
 │   │   ├── __init__.py
-│   │   └── main_window.py      # PyQt5 dual-panel user interface
+│   │   └── main_window.py      # PyQt5 desktop GUI
 │   ├── processing/
 │   │   ├── __init__.py
-│   │   └── filters.py          # Image filtering & edge detection algorithms
+│   │   └── filters.py          # Image processing pipeline
 │   ├── utils/
 │   │   ├── __init__.py
-│   │   └── image_utils.py      # Synthetic image generation & Qt format conversion
+│   │   └── image_utils.py      # Image generation & conversion utilities
 │   └── models/
-│       └── __init__.py         # Reserved package for future MediaPipe & YOLO integration
-├── assets/                     # UI graphics & icons
-├── sample_images/              # Test images for filter benchmarks
+│       └── __init__.py         # Reserved for future extensions
+├── assets/                     # Static resources
+├── sample_images/              # Sample images for testing
 ├── tests/
 │   ├── __init__.py
-│   └── test_pipeline.py        # Unittest smoke test suite
+│   └── test_pipeline.py        # Smoke tests
 ├── .github/
-│   └── PULL_REQUEST_TEMPLATE.md # Standard PR description template
-├── .gitignore                  # Git repository exclusion rules
-├── requirements.txt            # Project Python dependencies
-├── README.md                   # Project documentation manual
-└── main.py                     # Primary entry point script
-```
-
+│   └── PULL_REQUEST_TEMPLATE.md
+├── .gitignore
+├── requirements.txt
+└── README.md
 ---
 
 ## 🛠️ Technology Stack
