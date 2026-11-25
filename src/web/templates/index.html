@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Stylinger — Virtual Try-On Studio{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="Upload your photo and a garment to see a classical computer vision virtual try-on result. Pure OpenCV, NumPy, and 2D affine transformation.">
+{% endblock %}
+
+{% block content %}
+<div class="studio-container">
+
+  <!-- ========================================================================
+       Left Rail: Classical Pipeline Stepper
+       ======================================================================== -->
+  <aside class="studio-rail" aria-labelledby="pipeline-heading">
+    <div class="rail-header">
+      <h2 id="pipeline-heading">Processing Pipeline</h2>
+      <p class="rail-caption">Classical Computer Vision Stages</p>
+    </div>
+
+    <ol class="pipeline-stepper" id="pipeline-stepper" aria-label="Pipeline stage progress">
+      {% for stage in pipeline_stages %}
+      <li class="pipeline-step" id="stage-{{ stage.id }}" data-stage="{{ stage.id }}">
+        <span class="step-num">{{ stage.step }}</span>
+        <div class="step-info">
+          <span class="step-title">{{ stage.title }}</span>
+          <span class="step-algorithm">{{ stage.algorithm }}</span>
+        </div>
+        <span class="step-tag">{{ stage.phase }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <!-- Telemetry panel (populated by JS after a run) -->
+    <div class="telemetry-panel" id="telemetry-panel" hidden>
+      <div class="rail-header" style="margin-top: var(--space-2);">
+        <h2 style="font-size: var(--text-sm);">Pipeline Timing</h2>
+      </div>
+      <ul class="telemetry-list" id="telemetry-list" aria-label="Pipeline timing telemetry"></ul>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       Center Canvas: Primary Try-On Workspace
+       ======================================================================== -->
+  <section class="studio-center" aria-labelledby="studio-main-heading">
+
+    <!-- Hero / Status Header -->
+    <div class="stage-hero">
+      <h1 id="studio-main-heading">{{ studio_name }}</h1>
+      <p>Upload your photo and a garment image. The classical CG/IP pipeline segments your body, warps the garment geometrically, and composites it onto your portrait using 2D affine transformations and alpha blending.</p>
+    </div>
+
+    <!-- System Status Bar -->
+    <div class="system-status-bar" id="system-status-bar" role="status" aria-live="polite">
+      <span class="status-dot" id="status-dot"></span>
+      <span class="status-text" id="status-text">Checking tryon-service…</span>
+    </div>
+
+    <!-- Dual-Upload Panel -->
+    <div class="dual-upload-panel">
+
+      <!-- Portrait Upload -->
+      <div class="upload-card" id="portrait-upload-card">
+        <div class="upload-card-label">
+          <span class="upload-card-num">01</span>
+          Your Portrait
+        </div>
+        <div class="upload-dropzone"
+             id="portrait-dropzone"
+             role="button"
+             tabindex="0"
+             aria-label="Drop or click to upload your portrait photo"
+             aria-describedby="portrait-hint">
+          <div class="dropzone-inner" id="portrait-dropzone-inner">
+            <div class="upload-icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <p class="dropzone-title">Portrait Photo</p>
+            <p class="dropzone-hint" id="portrait-hint">Drag & drop or <strong>browse</strong> — PNG, JPG, WEBP, max 10 MB</p>
+          </div>
+          <img id="portrait-preview" class="dropzone-preview-img" alt="Your uploaded portrait preview" hidden>
+        </div>
+        <input type="file" id="portrait-file-input" accept="image/png,image/jpeg,image/webp" style="display:none" aria-hidden="true">
+        <button type="button" class="btn btn-secondary btn-sm" id="portrait-browse-btn" aria-label="Browse to upload portrait photo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Select Photo
+        </button>
+      </div>
+
+      <!-- Garment Upload -->
+      <div class="upload-card" id="garment-upload-card">
+        <div class="upload-card-label">
+          <span class="upload-card-num">02</span>
+          Garment Image
+        </div>
+        <div class="upload-dropzone"
+             id="garment-dropzone"
+             role="button"
+             tabindex="0"
+             aria-label="Drop or click to upload a garment image"
+             aria-describedby="garment-hint">
+          <div class="dropzone-inner" id="garment-dropzone-inner">
+            <div class="upload-icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+              </svg>
+            </div>
+            <p class="dropzone-title">Garment Image</p>
+            <p class="dropzone-hint" id="garment-hint">PNG with transparency preferred — flat-lay or studio shot</p>
+          </div>
+          <img id="garment-preview" class="dropzone-preview-img" alt="Uploaded garment image preview" hidden>
+        </div>
+        <input type="file" id="garment-file-input" accept="image/png,image/jpeg,image/webp" style="display:none" aria-hidden="true">
+        <button type="button" class="btn btn-secondary btn-sm" id="garment-browse-btn" aria-label="Browse to upload garment image">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Select Garment
+        </button>
+      </div>
+    </div>
+
+    <!-- Control Sliders Panel -->
+    <div class="controls-panel" id="controls-panel">
+      <div class="controls-header">
+        <span class="controls-title">Transform Controls</span>
+        <button type="button" class="btn btn-ghost btn-xs" id="reset-controls-btn" title="Reset all transform parameters to defaults">Reset</button>
+      </div>
+
+      <div class="controls-grid">
+        <div class="ctrl-group">
+          <label for="ctrl-scale" class="ctrl-label">Scale <span class="ctrl-val" id="val-scale">1.00×</span></label>
+          <input type="range" id="ctrl-scale" class="ctrl-slider" min="0.4" max="2.5" step="0.05" value="1.0" aria-label="Garment scale">
+        </div>
+        <div class="ctrl-group">
+          <label for="ctrl-offset-x" class="ctrl-label">Offset X <span class="ctrl-val" id="val-offset-x">0 px</span></label>
+          <input type="range" id="ctrl-offset-x" class="ctrl-slider" min="-200" max="200" step="1" value="0" aria-label="Horizontal position offset">
+        </div>
+        <div class="ctrl-group">
+          <label for="ctrl-offset-y" class="ctrl-label">Offset Y <span class="ctrl-val" id="val-offset-y">0 px</span></label>
+          <input type="range" id="ctrl-offset-y" class="ctrl-slider" min="-200" max="200" step="1" value="0" aria-label="Vertical position offset">
+        </div>
+        <div class="ctrl-group">
+          <label for="ctrl-rotation" class="ctrl-label">Rotation <span class="ctrl-val" id="val-rotation">0°</span></label>
+          <input type="range" id="ctrl-rotation" class="ctrl-slider" min="-45" max="45" step="1" value="0" aria-label="Garment rotation angle">
+        </div>
+        <div class="ctrl-group">
+          <label for="ctrl-feather" class="ctrl-label">Feather <span class="ctrl-val" id="val-feather">3 px</span></label>
+          <input type="range" id="ctrl-feather" class="ctrl-slider" min="0" max="25" step="1" value="3" aria-label="Edge feathering radius">
+        </div>
+        <div class="ctrl-group">
+          <label for="ctrl-opacity" class="ctrl-label">Opacity <span class="ctrl-val" id="val-opacity">100%</span></label>
+          <input type="range" id="ctrl-opacity" class="ctrl-slider" min="0.1" max="1.0" step="0.05" value="1.0" aria-label="Garment opacity">
+        </div>
+      </div>
+
+      <div class="controls-footer-row">
+        <label class="toggle-label" for="ctrl-match-lighting">
+          <input type="checkbox" id="ctrl-match-lighting" checked role="switch" aria-checked="true">
+          <span class="toggle-track" aria-hidden="true"></span>
+          CLAHE Lighting Match
+        </label>
+      </div>
+    </div>
+
+    <!-- Primary Action Buttons -->
+    <div class="action-bar" role="group" aria-label="Primary try-on actions">
+      <button type="button" class="btn btn-secondary" id="btn-segment-preview" disabled aria-label="Preview body segmentation overlay">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Segment Preview
+      </button>
+      <button type="button" class="btn btn-primary" id="btn-run-tryon" disabled aria-label="Run virtual try-on">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Run Try-On
+      </button>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-zone" id="progress-zone" hidden aria-live="polite" aria-label="Processing progress">
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+      </div>
+      <p class="progress-label" id="progress-label">Running pipeline…</p>
+    </div>
+
+    <!-- Error / Warning display -->
+    <div class="alert-zone" id="alert-zone" hidden role="alert" aria-live="assertive"></div>
+
+    <!-- Result Canvas (before/after split) -->
+    <div class="result-section" id="result-section" hidden>
+      <div class="result-header">
+        <h2 class="result-title">Try-On Result</h2>
+        <div class="result-controls" role="group" aria-label="Result view controls">
+          <button type="button" class="btn btn-ghost btn-xs tab-btn active" id="tab-result" data-tab="result">Result</button>
+          <button type="button" class="btn btn-ghost btn-xs tab-btn" id="tab-original" data-tab="original">Original</button>
+          <button type="button" class="btn btn-ghost btn-xs tab-btn" id="tab-compare" data-tab="compare">Compare</button>
+          <button type="button" class="btn btn-ghost btn-xs tab-btn" id="tab-segment" data-tab="segment">Seg. Overlay</button>
+        </div>
+      </div>
+
+      <!-- Result image tabs -->
+      <div class="result-canvas-wrapper">
+        <div class="result-tab-panel active" id="panel-result">
+          <img id="result-img" class="result-img" alt="Virtual try-on composite result" draggable="false">
+        </div>
+        <div class="result-tab-panel" id="panel-original" hidden>
+          <img id="original-img" class="result-img" alt="Original preprocessed portrait" draggable="false">
+        </div>
+        <div class="result-tab-panel" id="panel-compare" hidden>
+          <!-- Split-screen slider -->
+          <div class="compare-slider-wrapper" id="compare-wrapper">
+            <img id="compare-result-img" class="compare-img compare-img--result" alt="Try-on result" draggable="false">
+            <img id="compare-original-img" class="compare-img compare-img--original" alt="Original portrait" draggable="false">
+            <div class="compare-curtain" id="compare-curtain"></div>
+            <input type="range" class="compare-slider-input" id="compare-slider"
+                   min="0" max="100" value="50"
+                   aria-label="Drag to compare original and try-on result">
+            <div class="compare-label compare-label--left">Result</div>
+            <div class="compare-label compare-label--right">Original</div>
+          </div>
+        </div>
+        <div class="result-tab-panel" id="panel-segment" hidden>
+          <img id="segment-overlay-img" class="result-img" alt="Body segmentation overlay" draggable="false">
+        </div>
+      </div>
+
+      <!-- Metadata row -->
+      <div class="result-meta-row" id="result-meta-row" aria-label="Result metadata"></div>
+
+      <!-- Warnings -->
+      <div class="warnings-zone" id="warnings-zone" hidden role="status" aria-live="polite"></div>
+
+      <!-- Download -->
+      <div class="download-bar">
+        <a class="btn btn-primary" id="download-link" download="stylinger_tryon_result.png" aria-label="Download try-on result image">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Result
+        </a>
+        <button type="button" class="btn btn-secondary" id="btn-reset-studio" aria-label="Reset studio and start over">
+          Reset Studio
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========================================================================
+       Right Rail: Garment Catalog & Category Selector
+       ======================================================================== -->
+  <aside class="studio-rail" aria-labelledby="catalog-heading">
+    <div class="rail-header">
+      <h2 id="catalog-heading">Garment Catalog</h2>
+      <p class="rail-caption">Select a category type for the try-on algorithm</p>
+    </div>
+
+    <!-- Category selector chips -->
+    <div class="category-chips" role="group" aria-label="Garment category">
+      <button type="button" class="category-chip active" data-category="T-Shirt" aria-pressed="true">T-Shirt</button>
+      <button type="button" class="category-chip" data-category="Shirt" aria-pressed="false">Shirt</button>
+      <button type="button" class="category-chip" data-category="Jacket" aria-pressed="false">Jacket</button>
+      <button type="button" class="category-chip" data-category="Jeans" aria-pressed="false">Jeans</button>
+      <button type="button" class="category-chip" data-category="Dress" aria-pressed="false">Dress</button>
+    </div>
+
+    <ul class="catalog-list" id="catalog-list" aria-label="Garment catalog items">
+      {% for item in catalog_items %}
+      <li class="catalog-card {% if loop.index == 1 %}selected{% endif %}"
+          tabindex="0"
+          data-id="{{ item.id }}"
+          data-category="{{ item.api_category }}"
+          aria-label="{{ item.name }} — {{ item.category }}"
+          aria-selected="{% if loop.index == 1 %}true{% else %}false{% endif %}">
+        <div class="card-top">
+          <span class="card-title">{{ item.name }}</span>
+          <span class="card-category">{{ item.category }}</span>
+        </div>
+        <p class="card-desc">{{ item.description }}</p>
+        <div class="card-meta">
+          <span class="card-palette">{{ item.palette }}</span>
+          <span class="card-select-hint">Click to select →</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- Selected category display -->
+    <div class="selected-category-badge" id="selected-category-badge" aria-live="polite">
+      <span class="scb-label">Active Category:</span>
+      <span class="scb-value" id="selected-category-value">T-Shirt</span>
+    </div>
+
+    <!-- Academic constraints reminder -->
+    <div class="constraint-panel">
+      <p class="constraint-title">Algorithm Stack</p>
+      <ul class="constraint-list" aria-label="Algorithm constraints">
+        <li>GrabCut + Skin HSV Segmentation</li>
+        <li>Scanline Body Estimation</li>
+        <li>cv2.warpAffine (2D Affine)</li>
+        <li>Gaussian Edge Feathering</li>
+        <li>CLAHE Lighting Harmonisation</li>
+        <li>Zero deep learning / Zero AI APIs</li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+{% endblock %}

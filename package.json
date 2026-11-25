@@ -1,0 +1,17 @@
+{
+  "name": "cgip-stylinger",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Stylinger — Virtual Fashion Styling using Classical Computer Graphics and Image Processing",
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -n \"TRYON,FLASK,VITE\" -c \"magenta.bold,yellow.bold,cyan.bold\" \"npm run tryon\" \"npm run flask\" \"npm --prefix frontend run dev\"",
+    "tryon": "venv\\Scripts\\python.exe stylinger-cgip-main\\stylinger-cgip-main\\tryon-service\\app.py",
+    "flask": "venv\\Scripts\\python.exe -m flask --app src.web.app:create_app run --host=127.0.0.1 --port=5000",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "test:python": "venv\\Scripts\\pytest.exe --import-mode=importlib tests"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

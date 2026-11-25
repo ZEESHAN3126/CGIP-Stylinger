@@ -49,7 +49,10 @@ coverage.xml
 .pytest_cache/
 cover/
 
-# Virtual Environments
+# Virtual Environments & Environment Variables
+.env
+.env.*
+!.env.example
 venv/
 venv*/
 .venv/
@@ -58,6 +61,9 @@ env/
 ENV/
 env.bak/
 venv.bak/
+
+# Agents, skills, and local tooling
+.agents/
 
 # IDEs and Editors
 .idea/
@@ -78,11 +84,24 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Project generated scratch artifacts
-*.png
-*.jpg
-*.jpeg
-!assets/*.png
-!assets/*.jpg
-!sample_images/*.png
-!sample_images/*.jpg
+# Project generated scratch artifacts (ignore root scratch images, keep assets & samples)
+/*.png
+/*.jpg
+/*.jpeg
+!assets/**
+!sample_images/**
+!stylinger-cgip-main/**
+
+# Node / Vite
+node_modules/
+dist/
+*.local
+
+# Teammate zip archive
+stylinger-cgip-main.zip
+
+# Runtime temporary sessions
+temp/
+sessions/
+scratch/
+

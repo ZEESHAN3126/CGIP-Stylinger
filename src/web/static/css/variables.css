@@ -1,0 +1,85 @@
+/* Stylinger Studio — Design Tokens & Custom Properties
+ * Aesthetic Theme: Haute Numérique / Atelier Studio
+ * Strictly Vanilla CSS3 Architecture
+ */
+
+:root {
+  /* Surface & Canvas Tokens */
+  --bg-primary: #0A0C0F;              /* Deep Obsidian Void */
+  --bg-surface: #12151B;              /* Atelier Slate Surface */
+  --bg-surface-raised: #181C24;       /* Elevated Card & Panel Surface */
+  --bg-surface-elevated: #202632;     /* Floating Drawer & Header Surface */
+  --bg-surface-translucent: rgba(18, 21, 27, 0.85);
+
+  /* Structural Border & Divider Tokens */
+  --border-subtle: #202632;           /* Baseline Subdued Divider */
+  --border-default: #2E3747;          /* Standard Card & Element Perimeter */
+  --border-hover: #4A566E;            /* Interactive Hover Highlight */
+  --border-active: #D4AF37;           /* Selected State / Liquid Atelier Gold */
+  --border-dashed: rgba(212, 175, 55, 0.35);
+
+  /* Typography & Text Tokens */
+  --text-primary: #F7F6F3;            /* Warm Alabaster Primary */
+  --text-secondary: #9DA7B8;          /* Muted Studio Slate */
+  --text-tertiary: #5E697C;           /* Subdued Labels & Inactive Meta */
+  --text-accent: #E5C358;             /* Gold Accent Heading Text */
+  --text-code: #4CD6C0;               /* Algorithmic Cyan Telemetry */
+
+  /* Brand Accents & Semantic States */
+  --accent-gold: #D4AF37;             /* Liquid Atelier Gold */
+  --accent-gold-hover: #E5C358;       /* Warmer Bright Gold */
+  --accent-gold-glow: rgba(212, 175, 55, 0.20);
+  --accent-cyan: #4CD6C0;             /* CV Pipeline Indicator */
+  --state-success: #2ECC71;           /* Confirmation Green */
+  --state-warning: #E67E22;           /* Warning / Inactive Amber */
+  --state-error: #E74C3C;             /* Alert Crimson */
+
+  /* Typography Stacks */
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', 'Baskerville', 'Georgia', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Courier New', monospace;
+
+  /* Type Scales */
+  --text-xs: 0.6875rem;    /* 11px */
+  --text-sm: 0.8125rem;    /* 13px */
+  --text-base: 0.9375rem;  /* 15px */
+  --text-md: 1.0625rem;    /* 17px */
+  --text-lg: 1.25rem;      /* 20px */
+  --text-xl: 1.625rem;     /* 26px */
+  --text-2xl: 2.125rem;    /* 34px */
+  --text-3xl: 2.75rem;     /* 44px */
+
+  /* Spacing Scale (8pt Spatial Grid) */
+  --space-1: 0.25rem;      /* 4px */
+  --space-2: 0.5rem;       /* 8px */
+  --space-3: 0.75rem;      /* 12px */
+  --space-4: 1rem;         /* 16px */
+  --space-5: 1.25rem;      /* 20px */
+  --space-6: 1.5rem;       /* 24px */
+  --space-8: 2rem;         /* 32px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-12: 3rem;        /* 48px */
+  --space-16: 4rem;        /* 64px */
+
+  /* Corner Radius Strategy (Crisp, Architectural) */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-pill: 9999px;
+
+  /* Ambient Occlusion & Soft Depth Shadows */
+  --shadow-flat: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 4px 16px -2px rgba(0, 0, 0, 0.5);
+  --shadow-floating: 0 16px 40px -4px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+  --shadow-gold: 0 0 24px -2px rgba(212, 175, 55, 0.25);
+
+  /* Motion & Easing Curves */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout Constrained Widths */
+  --max-width-canvas: 1480px;
+  --rail-width-left: 360px;
+  --rail-width-right: 360px;
+}

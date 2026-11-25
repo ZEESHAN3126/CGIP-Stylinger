@@ -9,7 +9,12 @@
 
 ## 1. Roadmap Architecture
 
-The implementation is partitioned into 14 discrete, test-driven phases (Phase 0 through Phase 13). Each phase builds upon the verified output of the prior stage, preserving backward compatibility with the existing PyQt5 baseline while progressively realizing the web application described in the proposal.
+The implementation is partitioned into discrete, test-driven phases. Each phase builds upon the verified output of the prior stage, preserving backward compatibility with the existing PyQt5 baseline while progressively realizing the web application described in the proposal.
+
+> [!NOTE]
+> **Architecture Addendum — Phase 2 React/Vite Unification (Approved):**  
+> While the historical academic proposal originally outlined a server-rendered Flask web studio, the project has evolved to a decoupled **React + TypeScript + Vite** frontend (`frontend/`) communicating with a unified **Flask REST API** (`src/web/`, port 5000) via Vite's `/api` proxy. Orchestrated locally via root `npm run dev`. The core requirement remains strictly classical CG/IP (pure OpenCV, NumPy, Pillow; zero neural network inference).
+
 
 ---
 

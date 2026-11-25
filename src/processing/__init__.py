@@ -4,7 +4,7 @@ Contains computer vision algorithms, filters, color transformations,
 and edge detection pipelines for Stylinger.
 """
 
-from processing.filters import (
+from .filters import (
     rgb_to_grayscale,
     apply_gaussian_blur,
     canny_edge_detection,

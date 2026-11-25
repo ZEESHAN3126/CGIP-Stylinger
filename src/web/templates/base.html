@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Stylinger — Classical Computer Graphics and Image Processing Virtual Fashion Styling Studio. Pure OpenCV, NumPy, and 2D spatial transformation laboratory.">
+  <title>{% block title %}Stylinger — Classical CG/IP Virtual Fashion Styling{% endblock %}</title>
+
+  <!-- Typography: Editorial Serif, Clean Grotesque Sans, Precision Monospace -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Core Design Tokens & Stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Top Studio Navigation Bar -->
+  <header class="studio-header" role="banner">
+    <div class="brand-group">
+      <span class="brand-title">Stylinger<span class="brand-dot">.</span></span>
+      <span class="brand-subtitle">Classical CG/IP Studio</span>
+    </div>
+    <div class="header-meta">
+      <span class="badge badge-academic" title="OpenCV, NumPy, and 2D spatial transformations">
+        <span class="pulse-indicator"></span>
+        Deterministic DIP
+      </span>
+      <span class="badge badge-phase">
+        {{ current_phase }}
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Application Content Container -->
+  <main class="studio-main" role="main" id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Studio Footer & Academic Attribution -->
+  <footer class="studio-footer" role="contentinfo">
+    <div class="footer-content">
+      <p class="footer-title">Stylinger — Computer Graphics &amp; Image Processing Academic Studio</p>
+      <p class="footer-meta">
+        Built with Python 3.12 &bull; Flask &bull; OpenCV &bull; NumPy &bull; Semantic HTML5 &bull; Vanilla CSS3
+      </p>
+      <p class="footer-meta" style="color: var(--text-tertiary); font-size: 11px; margin-top: 4px;">
+        Classical Image Processing Laboratory &bull; Zero Deep Learning &bull; Zero External AI APIs &bull; Preserved PyQt5 Smoke-Test Baseline
+      </p>
+    </div>
+  </footer>
+
+  <!-- Vanilla Client Orchestration Script -->
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

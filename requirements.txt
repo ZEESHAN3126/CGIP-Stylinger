@@ -3,11 +3,14 @@ opencv-python>=4.9.0.80
 numpy>=1.26.4
 matplotlib>=3.8.3
 
-# Graphical User Interface
+# Graphical User Interface (PyQt5 Baseline)
 PyQt5>=5.15.10
 PyQt5-Qt5>=5.15.2
 PyQt5-sip>=12.13.0
 
-# Future AI/ML Pipeline Integration (Optional placeholders for upcoming modules)
-# mediapipe>=0.10.9
-# ultralytics>=8.1.0  # YOLO
+# Web Application Studio Framework
+flask>=3.0.0
+flask-cors>=4.0.0
+requests>=2.31.0
+gradio_client>=1.0.0
+python-dotenv>=1.0.0

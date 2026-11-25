@@ -31,8 +31,8 @@
 | **Baseline PyQt5 Desktop GUI** | Qt Event Loop & Dual Panels | `DONE` | `src/gui/main_window.py:MainWindow` |
 | **Automated Smoke Tests** | Headless `unittest` Suite | `DONE` | `tests/test_pipeline.py` (5 tests passing) |
 | **Project Specifications** | Architecture & Design Docs | `DONE` | `docs/project/` (8 specification documents) |
-| **Flask Application Skeleton** | Microframework Factory & Routing | `NEXT` | Phase 1 (`src/web/app.py`, `templates/`) |
-| **Real Image Ingestion & Upload**| Multipart Decoding & Validation | `FUTURE` | Phase 2 (`POST /api/upload`, `upload.js`) |
+| **Flask Application Skeleton** | Microframework Factory & Routing | `DONE` | Phase 1 (`src/web/app.py`, `templates/`, 12 tests passing) |
+| **Real Image Ingestion & Upload**| Multipart Decoding & Validation | `NEXT` | Phase 2 (`POST /api/upload`, `upload.js`) |
 | **Working Image Preprocessing** | Bilateral Filtering & Resizing | `FUTURE` | Phase 3 (`src/processing/filters.py`) |
 | **RGB → HSV Color Conversion** | Cylindrical Color Space Slicing | `FUTURE` | Phase 4 (`src/processing/segmentation.py`) |
 | **Background & Skin Segmentation**| Dual HSV Thresholding & Masking | `FUTURE` | Phase 4 (`cv2.inRange`, Otsu fallback) |
@@ -71,18 +71,28 @@
   - `schema.md` (Lightweight In-Memory Data Structures)
   - `rules.md` (Academic Constraints & Engineering Rules)
   - `tracker.md` (Live Milestone Tracking)
+- [x] Phase 1: Flask Application Skeleton & Web Studio Foundation:
+  - [x] Added `flask>=3.0.0` to `requirements.txt` and installed into virtual environment.
+  - [x] Created `src/web/app.py` implementing Application Factory pattern (`create_app`).
+  - [x] Created `src/web/routes.py` with `main_bp` and `api_bp` (`/` and `/api/health`).
+  - [x] Created semantic HTML5 base template (`templates/base.html`) and studio page (`templates/index.html`).
+  - [x] Created CSS custom properties design tokens (`static/css/variables.css`).
+  - [x] Implemented responsive *Haute Numérique* stylesheet (`static/css/main.css`).
+  - [x] Implemented vanilla ES6+ client orchestration script (`static/js/app.js`).
+  - [x] Created comprehensive unit tests in `tests/test_web.py` (all 12 project unit tests passing).
+  - [x] Live browser subagent verification of desktop and mobile viewports with zero console errors.
+  - [x] Preserved baseline PyQt5 application and independent execution.
 
 ---
 
 ### 3.2 Active & Queued Milestones
 
-#### `NEXT`: Phase 1 — Flask Application Skeleton
-- [ ] Install Flask dependency in `requirements.txt`.
-- [ ] Create Flask application module `src/web/` (`app.py`, `routes.py`).
-- [ ] Implement base HTML5 template (`templates/base.html`, `templates/index.html`).
-- [ ] Implement foundational CSS design tokens (`static/css/variables.css`, `static/css/main.css`).
-- [ ] Scaffolding JavaScript client orchestrator (`static/js/app.js`).
-- [ ] Verify independent dual execution: Flask web studio on `:5000` and PyQt5 desktop via `python src/main.py`.
+#### `NEXT`: Phase 2 — Real Image Ingestion & Upload
+- [ ] Implement multipart file upload endpoint (`POST /api/upload`) in `src/web/routes.py`.
+- [ ] Implement MIME and byte-level validation via OpenCV (`cv2.imdecode`).
+- [ ] Create `src/utils/file_utils.py` for UUID session directory lifecycle management.
+- [ ] Connect client-side drag-and-drop file ingestion in `static/js/upload.js`.
+- [ ] Add unit tests for upload validation and error paths in `tests/test_upload.py`.
 
 ---
 
