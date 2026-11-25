@@ -259,7 +259,7 @@ def _forward_to_tryon(sub_path: str):
                 url=target_url,
                 files=files,
                 data=data,
-                timeout=45,
+                timeout=120,
             )
         elif request.is_json:
             resp = _http.request(
@@ -267,7 +267,7 @@ def _forward_to_tryon(sub_path: str):
                 url=target_url,
                 json=request.get_json(silent=True),
                 headers=fwd_headers,
-                timeout=45,
+                timeout=120,
             )
         else:
             resp = _http.request(
@@ -275,7 +275,7 @@ def _forward_to_tryon(sub_path: str):
                 url=target_url,
                 data=request.get_data(),
                 headers=fwd_headers,
-                timeout=45,
+                timeout=120,
             )
 
         # Stream response back

@@ -107,32 +107,50 @@ def segment_foreground_threshold(img: np.ndarray) -> np.ndarray:
     return mask
 
 
-def segment_foreground_grabcut(img: np.ndarray, iterations: int = 4) -> np.ndarray:
+def segment_foreground_grabcut(img: np.ndarray, iterations: int = 4, max_dimension: int = 450) -> np.ndarray:
     """
     Robust GrabCut foreground segmentation.
-    Uses safe rectangular boundary initialization.
+    Uses safe rectangular boundary initialization on downsampled intermediate for sub-second execution,
+    then upsamples back to the original resolution with morphological boundary refinement.
     Falls back cleanly to thresholding if GrabCut returns degenerate masks.
     """
     bgr = img[:, :, :3] if len(img.shape) == 3 and img.shape[2] == 4 else img
     h, w = bgr.shape[:2]
 
+    # Downsample for sub-second GrabCut graph-cut optimization
+    scale = 1.0
+    if max(h, w) > max_dimension:
+        scale = max_dimension / float(max(h, w))
+        small_w = max(int(round(w * scale)), 16)
+        small_h = max(int(round(h * scale)), 16)
+        small_bgr = cv2.resize(bgr, (small_w, small_h), interpolation=cv2.INTER_AREA)
+    else:
+        small_bgr = bgr
+
+    sh, sw = small_bgr.shape[:2]
     bgd_model = np.zeros((1, 65), np.float64)
     fgd_model = np.zeros((1, 65), np.float64)
-    mask = np.zeros((h, w), np.uint8)
+    mask = np.zeros((sh, sw), np.uint8)
 
-    mx = max(int(w * 0.04), 4)
-    my = max(int(h * 0.02), 4)
-    rect = (mx, my, max(w - 2 * mx, 10), max(h - 2 * my, 10))
+    mx = max(int(sw * 0.04), 4)
+    my = max(int(sh * 0.02), 4)
+    rect = (mx, my, max(sw - 2 * mx, 10), max(sh - 2 * my, 10))
 
     try:
-        cv2.grabCut(bgr, mask, rect, bgd_model, fgd_model, iterations, cv2.GC_INIT_WITH_RECT)
-        binary_mask = np.where((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD), 255, 0).astype(np.uint8)
+        cv2.grabCut(small_bgr, mask, rect, bgd_model, fgd_model, iterations, cv2.GC_INIT_WITH_RECT)
+        binary_mask_small = np.where((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD), 255, 0).astype(np.uint8)
     except Exception:
-        binary_mask = segment_foreground_threshold(bgr)
+        binary_mask_small = segment_foreground_threshold(small_bgr)
 
-    fg_pixels = np.count_nonzero(binary_mask)
-    if fg_pixels < int(h * w * 0.05) or fg_pixels > int(h * w * 0.88):
-        binary_mask = segment_foreground_threshold(bgr)
+    fg_pixels = np.count_nonzero(binary_mask_small)
+    if fg_pixels < int(sh * sw * 0.05) or fg_pixels > int(sh * sw * 0.88):
+        binary_mask_small = segment_foreground_threshold(small_bgr)
+
+    # Upsample back to original resolution if downsampled
+    if scale < 1.0:
+        binary_mask = cv2.resize(binary_mask_small, (w, h), interpolation=cv2.INTER_NEAREST)
+    else:
+        binary_mask = binary_mask_small
 
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
     binary_mask = cv2.morphologyEx(binary_mask, cv2.MORPH_CLOSE, kernel)
